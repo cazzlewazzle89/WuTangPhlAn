@@ -10,6 +10,7 @@ Your working directory should contain
 
 For example, in an experiment examining two samples, a mock community, and a negative control - your RawFastQ/ directory would contain the following files
 
+```
 sampleA_R1.fastq.gz  
 sampleA_R2.fastq.gz  
 sampleB_R1.fastq.gz  
@@ -18,10 +19,13 @@ mock_R1.fastq.gz
 mock_R2.fastq.gz  
 neg_R1.fastq.gz  
 neg_R2.fastq.gz
+```
 
 and your samplenames.txt file would look like this
 
+```
 sampleA  
 sampleB  
 mock  
 neg
+```
