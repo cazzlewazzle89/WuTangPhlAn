@@ -2,8 +2,6 @@
 The goal is to turn this into a (w)rapper script for **Ph**y**l**ogenetic **An**alysis of metagenomic data.
 At the moment it is a work-in-progress tutorial mainly applicable for use on the hcux400 HPC at Teagasc but the general code should work on other machines.
 
-First, get your house in order:  
-
 Your working directory should contain
 * a `RawFastQ/` directory with demultiplexed, lane-merged, paired-end metagenomic reads
   * named in the format `samplename_R[1-2].fastq.gz`
