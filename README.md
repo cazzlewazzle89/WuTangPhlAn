@@ -1,5 +1,5 @@
 # WuTangPhlAn
-A work-in-progress (w)rapper script for Phylogenetic Analysis of metagenomic data
+The goal is to turn this into a (w)rapper script for Phylogenetic Analysis of metagenomic data. At the moment it is a work-in-progress tutorial.
 
 Mainly applicable for use on the hcux400 HPC at Teagasc but the general code should work on other machines.
 
