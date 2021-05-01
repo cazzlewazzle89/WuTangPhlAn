@@ -29,12 +29,13 @@ mock
 neg
 ```
 
-```##### Adapter removal and quality trimming using TrimGalore
-
+Adapter removal and quality trimming using TrimGalore
+```
 mkdir TrimmingReports/
 mkdir FastQC/
 mkdir TrimmedFastQ/
-
+```
+```
 for i in $(cat samplenames.txt)
 do
     module load cutadapt/2.6
@@ -50,11 +51,12 @@ do
 
     rm -r "$i"_trimout
 done
-
-##### host contamination removal using Bowtie2
-
+```
+Host contamination removal using Bowtie2
+```
 mkdir MicrobialFastQ/
-
+```
+```
 for i in $(cat samplenames.txt)
 do
     module load bowtie2/2.3.4
@@ -77,9 +79,9 @@ do
 
     gzip MicrobialFastQ/"$i"_microbial_R1.fastq MicrobialFastQ/"$i"_microbial_R2.fastq
 done
-
-##### species-level and functional profiling using HUMANn3
-
+```
+Species-level and functional profiling using HUMANn3
+```
 mkdir Metaphlan3outputs/
 mkdir Metaphlan3outputs/Sam/
 mkdir Metaphlan3outputs/MPAoutput/
@@ -88,7 +90,8 @@ mkdir Humann3outputs/Genefamilies/
 mkdir Humann3outputs/Pathabundance/
 mkdir Humann3outputs/Pathcoverage/
 mkdir Humann3outputs/Logs/
-
+```
+```
 for i in $(cat samplenames.txt)
 do
     module load bbmap/38.22
@@ -115,7 +118,8 @@ do
     mv "$i"_humann3out/"$i"_humann_temp/"$i"_metaphlan_bugs_list.tsv Metaphlan3outputs/MPAoutput/"$i".tsv
     rm -r "$i"_humann3out/
 done
-
+```
+```
 module load humann3/3.0
 
 humann_join_tables -i Humann3outputs/Pathabundance/ -o Humann3outputs/pathabundance.tsv -s --file_name '.tsv'
@@ -144,14 +148,15 @@ humann_renorm_table --input Humann3outputs/pathcoverage.tsv --units cpm --output
 humann_split_stratified_table --input Humann3outputs/pathcoverage_cpm.tsv --output Humann3outputs/
 
 module unload humann3/3.0
-
-##### Strain-level phylogenetic analysis using StrainPhlAn3
-
+```
+Strain-level phylogenetic analysis using StrainPhlAn3
+```
 mkdir StrainPhlAn/
 mkdir StrainPhlAn/ConsensusMarkers/
 mkdir StrainPhlAn/Output/
 mkdir StrainPhlAn/CladeMarkers/
-
+```
+```
 module load metaphlan2/3.0
 
 for i in $(cat samplenames.txt)
@@ -170,11 +175,12 @@ done
 module unload metaphlan2/3.0
 
 rm -r StrainPhlAn/ConsensusMarkers/ StrainPhlAn/CladeMarkers/
-
-##### Metagenome Assembly using Metaspades
-
+```
+Metagenome Assembly using Metaspades
+```
 mkdir Metaspades_Assemblies/
-
+```
+```
 for i in $(cat samplenames.txt)
 do
     module load spades/3.13
@@ -185,11 +191,12 @@ do
     mv Metaspades_Assemblies/"$i"_metaspades/spades.log Metaspades_Assemblies/"$i"_metaspadeslog.txt
     rm -r Metaspades_Assemblies/"$i"_metaspades/
 done
-
-##### MAG recovery using Metabat2
-
+```
+MAG recovery using Metabat2
+```
 mkdir MetaBat2_Bins/
-
+```
+```
 for i in $(cat samplenames.txt)
 do
     module load bowtie2/2.3.4
@@ -219,9 +226,9 @@ module load checkm
 checkm lineage_wf -t 24 -x fa MetaBat2_Bins/ CheckM_Output/ -f MetaBat2_Bins/checkm.txt
 module unload checkm
 rm -r CheckM_Output/
-
-##### using fastANI to get pairwise ANI values for all MAGs in a set
-
+```
+Using fastANI to get pairwise ANI values for all MAGs in a set
+```
 module load fastani/1.1
 
 ls FNA/*.fa > fastani_querylist.txt
@@ -229,11 +236,12 @@ fastANI --ql fastani_querylist.txt --rl fastani_querylist.txt -o allMAGs_fastANI
 rm fastani_querylist.txt
 
 module unload fastani/1.1
-
-##### screening contigs (metagenomic or genomic) for 
-
+```
+Screening contigs (metagenomic or genomic) for 
+```
 mkdir AbricateOutputs/
-
+```
+```
 module load abricate/0.8
 
 for i in $(cat samplenames.txt)
