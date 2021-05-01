@@ -30,7 +30,7 @@ neg
 ```
 
 Adapter removal and quality trimming using TrimGalore
-```
+```bash
 mkdir TrimmingReports/
 mkdir FastQC/
 mkdir TrimmedFastQ/
@@ -53,10 +53,10 @@ do
 done
 ```
 Host contamination removal using Bowtie2
-```
+```bash
 mkdir MicrobialFastQ/
 ```
-```
+```bash
 for i in $(cat samplenames.txt)
 do
     module load bowtie2/2.3.4
@@ -81,7 +81,7 @@ do
 done
 ```
 Species-level and functional profiling using HUMANn3
-```
+```bash
 mkdir Metaphlan3outputs/
 mkdir Metaphlan3outputs/Sam/
 mkdir Metaphlan3outputs/MPAoutput/
@@ -91,7 +91,7 @@ mkdir Humann3outputs/Pathabundance/
 mkdir Humann3outputs/Pathcoverage/
 mkdir Humann3outputs/Logs/
 ```
-```
+```bash
 for i in $(cat samplenames.txt)
 do
     module load bbmap/38.22
@@ -119,7 +119,7 @@ do
     rm -r "$i"_humann3out/
 done
 ```
-```
+```bash
 module load humann3/3.0
 
 humann_join_tables -i Humann3outputs/Pathabundance/ -o Humann3outputs/pathabundance.tsv -s --file_name '.tsv'
@@ -150,13 +150,13 @@ humann_split_stratified_table --input Humann3outputs/pathcoverage_cpm.tsv --outp
 module unload humann3/3.0
 ```
 Strain-level phylogenetic analysis using StrainPhlAn3
-```
+```bash
 mkdir StrainPhlAn/
 mkdir StrainPhlAn/ConsensusMarkers/
 mkdir StrainPhlAn/Output/
 mkdir StrainPhlAn/CladeMarkers/
 ```
-```
+```bash
 module load metaphlan2/3.0
 
 for i in $(cat samplenames.txt)
@@ -177,10 +177,10 @@ module unload metaphlan2/3.0
 rm -r StrainPhlAn/ConsensusMarkers/ StrainPhlAn/CladeMarkers/
 ```
 Metagenome Assembly using Metaspades
-```
+```bash
 mkdir Metaspades_Assemblies/
 ```
-```
+```bash
 for i in $(cat samplenames.txt)
 do
     module load spades/3.13
@@ -193,10 +193,10 @@ do
 done
 ```
 MAG recovery using Metabat2
-```
+```bash
 mkdir MetaBat2_Bins/
 ```
-```
+```bash
 for i in $(cat samplenames.txt)
 do
     module load bowtie2/2.3.4
@@ -228,7 +228,7 @@ module unload checkm
 rm -r CheckM_Output/
 ```
 Using fastANI to get pairwise ANI values for all MAGs in a set
-```
+```bash
 module load fastani/1.1
 
 ls FNA/*.fa > fastani_querylist.txt
@@ -238,10 +238,10 @@ rm fastani_querylist.txt
 module unload fastani/1.1
 ```
 Screening contigs (metagenomic or genomic) for 
-```
+```bash
 mkdir AbricateOutputs/
 ```
-```
+```bash
 module load abricate/0.8
 
 for i in $(cat samplenames.txt)
