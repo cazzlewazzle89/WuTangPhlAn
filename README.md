@@ -35,7 +35,7 @@ mkdir TrimmingReports/
 mkdir FastQC/
 mkdir TrimmedFastQ/
 ```
-```
+```bash
 for i in $(cat samplenames.txt)
 do
     module load cutadapt/2.6
