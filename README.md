@@ -29,7 +29,7 @@ mock
 neg
 ```
 
-Adapter removal and quality trimming using [TrimGalore!](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/)
+Adapter removal and quality trimming using [TrimGalore!](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/)  
 TrimGalore is a wrapper tool around [Cutadapt](https://cutadapt.readthedocs.io/en/stable/) and [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
 ```bash
 mkdir TrimmingReports/
