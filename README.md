@@ -29,8 +29,15 @@ mock
 neg
 ```
 
-Adapter removal and quality trimming using [TrimGalore!](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/)  
-TrimGalore is a wrapper tool around [Cutadapt](https://cutadapt.readthedocs.io/en/stable/) and [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
+The two main steps in quality control of metagenomic sequencing data are:  
+* adapter removal and quality trimming
+* removal of contaminant reads (usually host DNA is we are studying human, animal, or food microbiomes)
+
+One option is to run these steps separately (the first code box below) or use a wrapper script that combines these steps into one command (the second code box)
+
+If running these separately, I will usually perform adapter removal and quality trimming using [TrimGalore!](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/)  followed by contamination removal using [Bowtie2](https://github.com/BenLangmead/bowtie2)
+TrimGalore is a wrapper tool around [Cutadapt](https://cutadapt.readthedocs.io/en/stable/) and [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/).
+Bowtie2 is a very popular aligner which we can use to identify contaminant DNA by aligning paried-end metagenomic reads against a database (eg. the human or bovine genome).
 ```bash
 mkdir TrimmingReports/
 mkdir FastQC/
@@ -53,7 +60,6 @@ do
     rm -r "$i"_trimout
 done
 ```
-Host contamination removal using Bowtie2
 ```bash
 mkdir MicrobialFastQ/
 ```
