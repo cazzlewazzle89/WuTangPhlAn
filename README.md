@@ -100,7 +100,7 @@ do
 done
 ```
 
-If using a wrapper script for both steps I will usually use [KneadData](https://github.com/biobakery/kneaddata).
+If using a wrapper script for both steps I will usually use [KneadData](https://github.com/biobakery/kneaddata).  
 This wrapper script uses [Trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic) for adapter removal and quality trimming, folowed by contaminant read removal using either Bowtie2 (default) or [BMTagger](https://www.westgrid.ca/support/software/bmtagger).
 
 ```bash
@@ -224,8 +224,7 @@ mkdir StrainPhlAn/
 mkdir StrainPhlAn/ConsensusMarkers/
 mkdir StrainPhlAn/Output/
 mkdir StrainPhlAn/CladeMarkers/
-```
-```bash
+
 module load metaphlan2/3.0
 
 for i in $(cat samplenames.txt)
@@ -248,8 +247,7 @@ rm -r StrainPhlAn/ConsensusMarkers/ StrainPhlAn/CladeMarkers/
 Metagenome Assembly using Metaspades
 ```bash
 mkdir Metaspades_Assemblies/
-```
-```bash
+
 for i in $(cat samplenames.txt)
 do
     module load spades/3.13
@@ -264,8 +262,7 @@ done
 MAG recovery using Metabat2
 ```bash
 mkdir MetaBat2_Bins/
-```
-```bash
+
 for i in $(cat samplenames.txt)
 do
     module load bowtie2/2.3.4
@@ -309,8 +306,7 @@ module unload fastani/1.1
 Screening contigs (metagenomic or genomic) for 
 ```bash
 mkdir AbricateOutputs/
-```
-```bash
+
 module load abricate/0.8
 
 for i in $(cat samplenames.txt)
