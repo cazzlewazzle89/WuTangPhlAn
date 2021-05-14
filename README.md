@@ -39,7 +39,7 @@ If running these separately, I will usually perform adapter removal and quality 
 TrimGalore is a wrapper tool around [Cutadapt](https://cutadapt.readthedocs.io/en/stable/) and [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/).  
 Bowtie2 is a very popular aligner which we can use to identify contaminant DNA by aligning paried-end metagenomic reads against a database (eg. the human or bovine genome).  
 
-The steps in this script are as follows
+The steps in this script are as follows:
 * create output directories to store quality-trimming reports, read quality summaries, and quality-trimmed reads
 * run TrimGalore, tidy and rename output files, and delete intermediate files
 * create an output directory for quality-trimmed, non-contaminant reads
@@ -99,8 +99,10 @@ do
     gzip MicrobialFastQ/"$i"_microbial_R1.fastq MicrobialFastQ/"$i"_microbial_R2.fastq
 done
 ```
+
 If using a wrapper script for both steps I will usually use [KneadData](https://github.com/biobakery/kneaddata).
 This wrapper script uses [Trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic) for adapter removal and quality trimming, folowed by contaminant read removal using either Bowtie2 (default) or [BMTagger](https://www.westgrid.ca/support/software/bmtagger).
+
 ```bash
 mkdir Knead_Outputs/
 mkdir MicrobialFastQ/
@@ -124,18 +126,32 @@ module unload kneaddata_0.6.1
 
 gzip MicrobialFastQ/*.fastq
 ```
+
 Taxonomic and functional microbiome profiling using [HUMANn3](https://github.com/biobakery/humann)
 The script will
-* create output directories for eahc output
+* create directories for each output
 * create interleaved fastq files using [BBTools](https://jgi.doe.gov/data-and-tools/bbtools/)
 * run the HUMANn3 pipeline
+* remove the interleaved fastq files
 * convert the MetaPhlAn3 alignment output to BAM format
 * tidy and rename output directories
-* join, regroup, and rename genefamily functional outputs
+* join, regroup, and rename genefamily-level functional outputs based on different protein/enzyme family categorisation systems
+  * In the example below I use the default uniref90 scheme but also regroup based on EC number and Gene Ontology terms. There are more systems supported and the naming/grouping files are located in `data/databases/Humann3/utility_mapping/`
 * normalise functional outputs to "copies per million reads" to account for inter-sample vairation in sequencing depth
 * split functional outputs into two files
   * `stratified` outputs describe the predicted functional capacity of the community separated by species
   * `unstratified`outputs describe the function capacity of the community as a whole
+
+The final output files are listed here and can be imported into your analysis/visualision software of choice to get started on the fun stuff
+* `Metaphlan3outputs/metaphlan.tsv`
+* `Humann3outputs/genefamilies_uniref90_name_cpm_stratified.tsv`
+* `Humann3outputs/genefamilies_uniref90_name_cpm_unstratified.tsv`
+* `Humann3outputs/genefamilies_level4ec_name_cpm_stratified.tsv`
+* `Humann3outputs/genefamilies_level4ec_name_cpm_unstratified.tsv`
+* `Humann3outputs/genefamilies_go_name_cpm_stratified.tsv`
+* `Humann3outputs/genefamilies_go_name_cpm_unstratified.tsv`
+* `Humann3outputs/pathabundance_cpm_stratified.tsv`
+* `Humann3outputs/pathabundance_cpm_unstratified.tsv`
 ```bash
 mkdir Metaphlan3outputs/
 mkdir Metaphlan3outputs/Sam/
@@ -191,10 +207,10 @@ humann_rename_table --input Humann3outputs/genefamilies_level4ec.tsv -c /data/da
 humann_renorm_table --input Humann3outputs/genefamilies_level4ec_name.tsv --units cpm --output Humann3outputs/genefamilies_level4ec_name_cpm.tsv
 humann_split_stratified_table --input Humann3outputs/genefamilies_level4ec_name_cpm.tsv --output Humann3outputs/
 
-humann_regroup_table -i Humann3outputs/genefamilies.tsv -c /data/databases/Humann3/utility_mapping/map_ko_uniref90.txt.gz --output Humann3outputs/genefamilies_ko.tsv -u N
-humann_rename_table --input Humann3outputs/genefamilies_ko.tsv -c /data/databases/Humann3/utility_mapping/map_ko_name.txt.gz --output Humann3outputs/genefamilies_ko_name.tsv
-humann_renorm_table --input Humann3outputs/genefamilies_ko_name.tsv --units cpm --output Humann3outputs/genefamilies_ko_name_cpm.tsv
-humann_split_stratified_table --input Humann3outputs/genefamilies_ko_name_cpm.tsv --output Humann3outputs/
+humann_regroup_table -i Humann3outputs/genefamilies.tsv -c /data/databases/Humann3/utility_mapping/map_go_uniref90.txt.gz --output Humann3outputs/genefamilies_go.tsv -u N
+humann_rename_table --input Humann3outputs/genefamilies_go.tsv -c /data/databases/Humann3/utility_mapping/map_ko_name.txt.gz --output Humann3outputs/genefamilies_go_name.tsv
+humann_renorm_table --input Humann3outputs/genefamilies_go_name.tsv --units cpm --output Humann3outputs/genefamilies_go_name_cpm.tsv
+humann_split_stratified_table --input Humann3outputs/genefamilies_go_name_cpm.tsv --output Humann3outputs/
 
 humann_renorm_table --input Humann3outputs/pathabundance.tsv --units cpm --output Humann3outputs/pathabundance_cpm.tsv
 humann_split_stratified_table --input Humann3outputs/pathabundance_cpm.tsv --output Humann3outputs/
