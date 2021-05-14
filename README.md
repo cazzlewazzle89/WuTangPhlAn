@@ -48,7 +48,9 @@ The steps in this script are as follows
   * converting the alignment output to binary output to save space
   * removing reads which aligned to the contaminant database
   * converting the alignment back into fastq format
- The files are stored in the MicrobialFastQ/ directory and are the metagenomic reads which you will use for downstream analysis.
+ The files are stored in the MicrobialFastQ/ directory and are the metagenomic reads which you will use for downstream analysis.  
+ Note: the steps in the example below all specify that 24 CPUs are used for every task. You will need to specify this in your SLURM batch script when submitting the job using `#SBATCH --cpus-per-task=8` or adjust the number of however many CPUs you would like to use.  
+ They also use default parameters. You may need to change these based on your data. 
 
 
 ```bash
@@ -60,7 +62,7 @@ for i in $(cat samplenames.txt)
 do
     module load cutadapt/2.6
     module load fastqc/0.11.8
-    ~/TrimGalore-0.6.0/trim_galore --paired RawFastQ/"$i"_R1.fastq.gz RawFastQ/"$i"_R2.fastq.gz --fastqc -j 24 -q 30 -o "$i"_trimout
+    ~/TrimGalore-0.6.0/trim_galore --paired RawFastQ/"$i"_R1.fastq.gz RawFastQ/"$i"_R2.fastq.gz --fastqc -j 8 -o "$i"_trimout
     module load cutadapt/2.6
     module unload fastqc/0.11.8
 
@@ -77,15 +79,15 @@ mkdir MicrobialFastQ/
 for i in $(cat samplenames.txt)
 do
     module load bowtie2/2.3.4
-    bowtie2 -x /data/databases/hostremoval/Homo_sapiens/Bowtie2/Homo_sapiens -1 TrimmedFastQ/"$i"_trimmed_R1.fastq.gz -2 TrimmedFastQ/"$i"_trimmed_R2.fastq.gz -S "$i".sam -p 24
+    bowtie2 -x /data/databases/hostremoval/Homo_sapiens/Bowtie2/Homo_sapiens -1 TrimmedFastQ/"$i"_trimmed_R1.fastq.gz -2 TrimmedFastQ/"$i"_trimmed_R2.fastq.gz -S "$i".sam -p 8
     module unload bowtie2/2.3.4
 
     module load samtools/1.10
-    samtools view -bS "$i".sam -@ 24 > "$i".bam
+    samtools view -bS "$i".sam -@ 8 > "$i".bam
     rm "$i".sam
-    samtools view -b -f 12 -F 256 "$i".bam -@ 24 > "$i"_nonhost.bam
+    samtools view -b -f 12 -F 256 "$i".bam -@ 8 > "$i"_nonhost.bam
     rm "$i".bam
-    samtools sort -n "$i"_nonhost.bam -T "$i"_nonhost_temp -o "$i"_nonhost_sorted.bam -@ 24
+    samtools sort -n "$i"_nonhost.bam -T "$i"_nonhost_temp -o "$i"_nonhost_sorted.bam -@ 8
     rm "$i"_nonhost.bam
     module unload samtools/1.10
 
@@ -109,7 +111,7 @@ source activate kneaddata_0.6.1
 
 for i in $(cat samplenames.txt)
 do
-    kneaddata -i "$i"_R1.fastq.gz -i "$i"_R2.fastq.gz -db /data/databases/hostremoval/Homo_sapiens/Bowtie2/ --output Knead_Outputs/"$i" --threads 10 --output-prefix "$i" --remove-intermediate-output
+    kneaddata -i "$i"_R1.fastq.gz -i "$i"_R2.fastq.gz -db /data/databases/hostremoval/Homo_sapiens/Bowtie2/ --output Knead_Outputs/"$i" --threads 8 --output-prefix "$i" --remove-intermediate-output
     
     mv Knead_Outputs/"$i"/"$i"_paired_1.fastq MicrobialFastQ/"$i"_microbial_R1.fastq
     mv Knead_Outputs/"$i"/"$i"_paired_2.fastq MicrobialFastQ/"$i"_microbial_R2.fastq 
