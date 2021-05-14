@@ -124,7 +124,18 @@ module unload kneaddata_0.6.1
 
 gzip MicrobialFastQ/*.fastq
 ```
-Taxonomic and functional microbiome profiling using HUMANn3
+Taxonomic and functional microbiome profiling using [HUMANn3](https://github.com/biobakery/humann)
+The script will
+* create output directories for eahc output
+* create interleaved fastq files using [BBTools](https://jgi.doe.gov/data-and-tools/bbtools/)
+* run the HUMANn3 pipeline
+* convert the MetaPhlAn3 alignment output to BAM format
+* tidy and rename output directories
+* join, regroup, and rename genefamily functional outputs
+* normalise functional outputs to "copies per million reads" to account for inter-sample vairation in sequencing depth
+* split functional outputs into two files
+  * `stratified` outputs describe the predicted functional capacity of the community separated by species
+  * `unstratified`outputs describe the function capacity of the community as a whole
 ```bash
 mkdir Metaphlan3outputs/
 mkdir Metaphlan3outputs/Sam/
@@ -144,14 +155,14 @@ do
 
     module load humann3/3.0
     module load diamond/0.9.24
-    humann -i MicrobialFastQ/"$i"_interleaved.fastq.gz -o "$i"_humann3out --nucleotide-database /data/databases/Humann3/chocophlan --protein-database /data/databases/Humann3/uniref --search-mode uniref90 --metaphlan-options "-s "$i"_metaphlan3.sam --bowtie2db /data/databases/MetaPhlAn3 -x mpa_v30_CHOCOPhlAn_201901 --bowtie2out "$i"_metaphlan3bowtie2out.txt" --threads 24 --memory-use maximum --output-basename "$i"
+    humann -i MicrobialFastQ/"$i"_interleaved.fastq.gz -o "$i"_humann3out --nucleotide-database /data/databases/Humann3/chocophlan --protein-database /data/databases/Humann3/uniref --search-mode uniref90 --metaphlan-options "-s "$i"_metaphlan3.sam --bowtie2db /data/databases/MetaPhlAn3 -x mpa_v30_CHOCOPhlAn_201901 --bowtie2out "$i"_metaphlan3bowtie2out.txt" --threads 8 --memory-use maximum --output-basename "$i"
     rm MicrobialFastQ/"$i"_interleaved.fastq.gz
     module unload humann3/3.0
     module unload diamond/0.9.24
 
     module load samtools/1.10
     mv "$i"_metaphlan3.sam Metaphlan3outputs/Sam/"$i".sam
-    samtools view -bS Metaphlan3outputs/Sam/"$i".sam -@ 24 > Metaphlan3outputs/Sam/"$i".bam
+    samtools view -bS Metaphlan3outputs/Sam/"$i".sam -@ 8 > Metaphlan3outputs/Sam/"$i".bam
     rm Metaphlan3outputs/Sam/"$i".sam
     module unload samtools/1.10
 
