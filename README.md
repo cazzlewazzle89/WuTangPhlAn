@@ -33,11 +33,23 @@ The two main steps in quality control of metagenomic sequencing data are:
 * adapter removal and quality trimming
 * removal of contaminant reads (usually host DNA is we are studying human, animal, or food microbiomes)
 
-One option is to run these steps separately (the first code box below) or use a wrapper script that combines these steps into one command (the second code box)
+One option is to run these steps separately (the first code block below) or use a wrapper script that combines these steps into one command (the second code block)
 
-If running these separately, I will usually perform adapter removal and quality trimming using [TrimGalore!](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/)  followed by contamination removal using [Bowtie2](https://github.com/BenLangmead/bowtie2)
+If running these separately, I will usually perform adapter removal and quality trimming using [TrimGalore!](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/)  followed by contamination removal using [Bowtie2](https://github.com/BenLangmead/bowtie2).  
 TrimGalore is a wrapper tool around [Cutadapt](https://cutadapt.readthedocs.io/en/stable/) and [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/).  
 Bowtie2 is a very popular aligner which we can use to identify contaminant DNA by aligning paried-end metagenomic reads against a database (eg. the human or bovine genome).  
+
+The steps in this script are as follows
+* create output directories to store quality-trimming reports, read quality summaries, and quality-trimmed reads
+* run TrimGalore, tidy and rename output files, and delete intermediate files
+* create an output directory for quality-trimmed, non-contaminant reads
+* Run Bowtie2 and [Samtools](http://www.htslib.org/) to remove contamination by
+  * aligning quality-trimmed reads to the human genome (you may need to use a more appropriate genome/database depending on your sample source)
+  * converting the alignment output to binary output to save space
+  * removing reads which aligned to the contaminant database
+  * converting the alignment back into fastq format
+ The files are stored in the MicrobialFastQ/ directory and are the metagenomic reads which you will use for downstream analysis.
+
 
 ```bash
 mkdir TrimmingReports/
@@ -102,7 +114,7 @@ conda deactivate
 module unload kneaddata_0.6.1
 
 ```
-Species-level and functional profiling using HUMANn3
+Taxonomic and functional microbiome profiling using HUMANn3
 ```bash
 mkdir Metaphlan3outputs/
 mkdir Metaphlan3outputs/Sam/
