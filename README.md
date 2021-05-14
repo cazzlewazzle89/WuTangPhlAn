@@ -36,14 +36,14 @@ The two main steps in quality control of metagenomic sequencing data are:
 One option is to run these steps separately (the first code box below) or use a wrapper script that combines these steps into one command (the second code box)
 
 If running these separately, I will usually perform adapter removal and quality trimming using [TrimGalore!](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/)  followed by contamination removal using [Bowtie2](https://github.com/BenLangmead/bowtie2)
-TrimGalore is a wrapper tool around [Cutadapt](https://cutadapt.readthedocs.io/en/stable/) and [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/).
-Bowtie2 is a very popular aligner which we can use to identify contaminant DNA by aligning paried-end metagenomic reads against a database (eg. the human or bovine genome).
+TrimGalore is a wrapper tool around [Cutadapt](https://cutadapt.readthedocs.io/en/stable/) and [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/).  
+Bowtie2 is a very popular aligner which we can use to identify contaminant DNA by aligning paried-end metagenomic reads against a database (eg. the human or bovine genome).  
+
 ```bash
 mkdir TrimmingReports/
 mkdir FastQC/
 mkdir TrimmedFastQ/
-```
-```bash
+
 for i in $(cat samplenames.txt)
 do
     module load cutadapt/2.6
@@ -59,11 +59,9 @@ do
 
     rm -r "$i"_trimout
 done
-```
-```bash
+
 mkdir MicrobialFastQ/
-```
-```bash
+
 for i in $(cat samplenames.txt)
 do
     module load bowtie2/2.3.4
@@ -86,6 +84,23 @@ do
 
     gzip MicrobialFastQ/"$i"_microbial_R1.fastq MicrobialFastQ/"$i"_microbial_R2.fastq
 done
+```
+If using a wrapper script for both steps I will usually use [KneadData](https://github.com/biobakery/kneaddata).
+This wrapper script uses [Trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic) for adapter removal and quality trimming, folowed by contaminant read removal using either Bowtie2 (default) or [BMTagger](https://www.westgrid.ca/support/software/bmtagger).
+```bash
+mkdir Knead_Outputs/
+
+module load kneaddata/0.6.1
+source activate kneaddata_0.6.1
+
+for i in $(cat samplenames.txt)
+do
+    kneaddata -i "$i"_R1.fastq.gz -i "$i"_R2.fastq.gz -db /data/databases/hostremoval/Homo_sapiens/Bowtie2/ --output Knead_Outputs/"$i" --threads 10 --output-prefix "$i"
+done
+
+conda deactivate
+module unload kneaddata_0.6.1
+
 ```
 Species-level and functional profiling using HUMANn3
 ```bash
