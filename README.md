@@ -101,18 +101,26 @@ If using a wrapper script for both steps I will usually use [KneadData](https://
 This wrapper script uses [Trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic) for adapter removal and quality trimming, folowed by contaminant read removal using either Bowtie2 (default) or [BMTagger](https://www.westgrid.ca/support/software/bmtagger).
 ```bash
 mkdir Knead_Outputs/
+mkdir MicrobialFastQ/
+mkdir Kneaddata_Logs/
 
 module load kneaddata/0.6.1
 source activate kneaddata_0.6.1
 
 for i in $(cat samplenames.txt)
 do
-    kneaddata -i "$i"_R1.fastq.gz -i "$i"_R2.fastq.gz -db /data/databases/hostremoval/Homo_sapiens/Bowtie2/ --output Knead_Outputs/"$i" --threads 10 --output-prefix "$i"
+    kneaddata -i "$i"_R1.fastq.gz -i "$i"_R2.fastq.gz -db /data/databases/hostremoval/Homo_sapiens/Bowtie2/ --output Knead_Outputs/"$i" --threads 10 --output-prefix "$i" --remove-intermediate-output
+    
+    mv Knead_Outputs/"$i"/"$i"_paired_1.fastq MicrobialFastQ/"$i"_microbial_R1.fastq
+    mv Knead_Outputs/"$i"/"$i"_paired_2.fastq MicrobialFastQ/"$i"_microbial_R2.fastq 
+    mv Knead_Outputs/"$i"/"$i".log Kneaddata_Logs/"$i"_log.txt
+    rm -r Knead_Outputs/"$i"/
 done
 
 conda deactivate
 module unload kneaddata_0.6.1
 
+gzip MicrobialFastQ/*.fastq
 ```
 Taxonomic and functional microbiome profiling using HUMANn3
 ```bash
