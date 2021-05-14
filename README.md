@@ -152,7 +152,7 @@ The final output files are listed here and can be imported into your analysis/vi
 * `Humann3outputs/genefamilies_go_name_cpm_unstratified.tsv`
 * `Humann3outputs/pathabundance_cpm_stratified.tsv`
 * `Humann3outputs/pathabundance_cpm_unstratified.tsv`
-```bash
+```
 mkdir Metaphlan3outputs/
 mkdir Metaphlan3outputs/Sam/
 mkdir Metaphlan3outputs/MPAoutput/
@@ -161,8 +161,7 @@ mkdir Humann3outputs/Genefamilies/
 mkdir Humann3outputs/Pathabundance/
 mkdir Humann3outputs/Pathcoverage/
 mkdir Humann3outputs/Logs/
-```
-```bash
+
 for i in $(cat samplenames.txt)
 do
     module load bbmap/38.22
@@ -189,8 +188,7 @@ do
     mv "$i"_humann3out/"$i"_humann_temp/"$i"_metaphlan_bugs_list.tsv Metaphlan3outputs/MPAoutput/"$i".tsv
     rm -r "$i"_humann3out/
 done
-```
-```bash
+
 module load humann3/3.0
 
 humann_join_tables -i Humann3outputs/Pathabundance/ -o Humann3outputs/pathabundance.tsv -s --file_name '.tsv'
