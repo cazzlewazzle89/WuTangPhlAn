@@ -293,6 +293,61 @@ checkm lineage_wf -t 24 -x fa MetaBat2_Bins/ CheckM_Output/ -f MetaBat2_Bins/che
 module unload checkm
 rm -r CheckM_Output/
 ```
+Alternatively, you can use [metaWRAP](https://github.com/bxlab/metaWRAP) to recover MAGs.  This is a wrapper that uses multiple different binning algorithms (in this case I use [MetaBat2](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6662567/), [CONCOCT](https://pubmed.ncbi.nlm.nih.gov/25218180/), and [MaxBin2](https://pubmed.ncbi.nlm.nih.gov/26515820/) but you can use any combination and number of binners), and combines and refines their outputs.  
+In my (admittedly limited) testing it appears to recover more MAGs than MetaBat2 alone.
+It can also perform quality trimming of raw metagenomic reads and removal of contamination (eg. human or bovine DNA) but here I only use it for recovering MAGs.  
+
+The script below will
+* create an output directory for each sample
+* remove metagenomic contigs shorter than 1kbp using [BBTools](https://jgi.doe.gov/data-and-tools/bbtools/)
+* copy metagenomic data to the current working directory, decompress, and rename input files to match the format expected by metaWrap
+* bin metagenomic contigs using MetaBat2, MaxBin2, and Concoct
+* refine these bins and retain only those with >= 90% completeness and < 5% contamination as evaluated by CheckM
+* reassemble these bins to improve assembly length
+* tidy up the working directory by removing temporary and intermediary files
+
+```bash
+mkdir MetaWrap_Outputs/
+
+for i in $(cat samplenames.txt)
+do
+
+    mkdir MetaWrap_Outputs/"$i"/
+
+    module load bbmap/38.22
+    reformat.sh in=Assemblies/"$i"_contigs.fasta out="$i"_filteredcontigs.fasta minlength=1000
+    module unload bbmap/38.22
+
+    cp FastQ/"$i"_R1.fastq.gz .
+    gunzip "$i"_R1.fastq.gz
+    mv "$i"_R1.fastq "$i"_1.fastq
+
+    cp FastQ/"$i"_R2.fastq.gz .
+    gunzip "$i"_R2.fastq.gz
+    mv "$i"_R2.fastq "$i"_2.fastq
+
+    module load metawrap/1.3.2
+    module load concoct/1.1.0
+    source activate concoct_env
+    metawrap binning -o "$i"_binning -t 30 -a "$i"_filteredcontigs.fasta --metabat2 --maxbin2 --concoct "$i"_1.fastq "$i"_2.fastq
+    conda deactivate
+    module unload concoct/1.1.0
+    module load checkm/1.0.18
+    metawrap bin_refinement -o "$i"_binrefining -t 30 -A "$i"_binning/metabat2_bins/ -B "$i"_binning/maxbin2_bins/ -C "$i"_binning/concoct_bins/ -c 90 -x 5
+    metawrap reassemble_bins -o "$i"_binreassembly -1 "$i"_1.fastq -2 "$i"_2.fastq -t 30 -m 800 -c 90 -x 5 -b "$i"_binrefining/metawrap_90_5_bins
+    module unload checkm/1.0.18
+    module unload metawrap/1.3.2
+    
+    mv "$i"_binreassembly/reassembled_bins/*.fa MetaWrap_Outputs/"$i"/
+    mv "$i"_binreassembly/reassembled_bins.stats MetaWrap_Outputs/"$i"/
+    rm -r "$i"_1.fastq "$i"_2.fastq "$i"_filteredcontigs.fasta "$i"_binning "$i"_binrefining "$i"_binreassembly
+ 
+done
+
+
+```
+
+
 Using fastANI to get pairwise ANI values for all MAGs in a set
 ```bash
 module load fastani/1.1
