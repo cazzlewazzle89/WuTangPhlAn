@@ -48,7 +48,7 @@ The four components to this command are:
 3. [`sed`](https://en.wikipedia.org/wiki/Sed) is an command that edits text using [regular expressions](https://en.wikipedia.org/wiki/Regular_expression). 
    In this case we are telling it to perform two substitutions.  
    The first removes the 'RawFastQ/' string from the beginning of each line.  
-   The second removes the '\_R1.fastq.gz' from the end of each line.  
+   The second removes the '\_R1.fastq.gz' string from the end of each line.  
 4. `>` directs the output to a text file named 'samplenames.txt' instead of printing to the terminal screen
 
 ## Quality control
