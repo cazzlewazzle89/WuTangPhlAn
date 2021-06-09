@@ -1,6 +1,14 @@
 # Enter the Wu-TangPhlAn
 The goal is to turn this into a (w)rapper script for **Ph**y**l**ogenetic **An**alysis of metagenomic data.  
-At the moment it is a work-in-progress tutorial mainly applicable for use on the hcux400 HPC at Teagasc but the general code should work on other machines.
+At the moment it is a work-in-progress tutorial mainly applicable for use on the hcux400 HPC at Teagasc but the general code should work on other machines.  
+
+### Table of Contents
+[Setup](https://github.com/cazzlewazzle89/WuTangPhlAn#setup)  
+[Quality Control](https://github.com/cazzlewazzle89/WuTangPhlAn#quality-control)  
+[Microbiome Profiling](https://github.com/cazzlewazzle89/WuTangPhlAn#microbiome-profiling)  
+[Metagenome Assembly](https://github.com/cazzlewazzle89/WuTangPhlAn#metagenome-assembly-using-metaspades)  
+[Strain-level Analysis](https://github.com/cazzlewazzle89/WuTangPhlAn#strain-level-analysis)  
+[Recovery of Metagenome-Assembled Genomes (MAGs)](https://github.com/cazzlewazzle89/WuTangPhlAn#recovery-of-metagenome-assembled-genomes-mags)
 
 ## Setup  
 Your working directory should contain
@@ -220,7 +228,8 @@ humann_split_stratified_table --input Humann3outputs/pathcoverage_cpm.tsv --outp
 
 module unload humann3/3.0
 ```
-## Strain-level phylogenetic analysis using StrainPhlAn3
+## Strain-level Analysis
+You can use the SAM output files from [MetaPhlAn3](https://github.com/biobakery/MetaPhlAn/wiki/MetaPhlAn-3.0) or [HUMANn3](https://github.com/biobakery/humann) to perform strain-level profiling using [StrainPhlAn3](https://github.com/biobakery/MetaPhlAn/wiki/StrainPhlAn-3.0)
 ```bash
 mkdir StrainPhlAn/
 mkdir StrainPhlAn/ConsensusMarkers/
