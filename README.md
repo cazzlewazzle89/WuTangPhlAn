@@ -2,6 +2,7 @@
 The goal is to turn this into a (w)rapper script for **Ph**y**l**ogenetic **An**alysis of metagenomic data.  
 At the moment it is a work-in-progress tutorial mainly applicable for use on the hcux400 HPC at Teagasc but the general code should work on other machines.
 
+## Setup  
 Your working directory should contain
 * a `RawFastQ/` directory with demultiplexed, lane-merged, paired-end metagenomic reads
   * named in the format `samplename_R[1-2].fastq.gz`
@@ -29,6 +30,7 @@ mock
 neg
 ```
 
+## Quality control
 The two main steps in quality control of metagenomic sequencing data are:  
 * adapter removal and quality trimming
 * removal of contaminant reads (usually host DNA is we are studying human, animal, or food microbiomes)
@@ -127,8 +129,8 @@ module unload kneaddata_0.6.1
 gzip MicrobialFastQ/*.fastq
 ```
 
-Taxonomic and functional microbiome profiling using [HUMANn3](https://github.com/biobakery/humann)
-The script will
+## Microbiome Profiling
+This script perfoms taxonomic and functional profiling using [HUMANn3](https://github.com/biobakery/humann) and will
 * create directories for each output
 * create interleaved fastq files using [BBTools](https://jgi.doe.gov/data-and-tools/bbtools/)
 * run the HUMANn3 pipeline
@@ -218,7 +220,7 @@ humann_split_stratified_table --input Humann3outputs/pathcoverage_cpm.tsv --outp
 
 module unload humann3/3.0
 ```
-Strain-level phylogenetic analysis using StrainPhlAn3
+## Strain-level phylogenetic analysis using StrainPhlAn3
 ```bash
 mkdir StrainPhlAn/
 mkdir StrainPhlAn/ConsensusMarkers/
@@ -244,7 +246,7 @@ module unload metaphlan2/3.0
 
 rm -r StrainPhlAn/ConsensusMarkers/ StrainPhlAn/CladeMarkers/
 ```
-Metagenome Assembly using Metaspades
+## Metagenome Assembly using Metaspades
 ```bash
 mkdir Metaspades_Assemblies/
 
@@ -259,7 +261,8 @@ do
     rm -r Metaspades_Assemblies/"$i"_metaspades/
 done
 ```
-MAG recovery using Metabat2
+## Recovery of Metagenome-Assembled Genomes (MAGs)
+ Metabat2
 ```bash
 mkdir MetaBat2_Bins/
 
@@ -358,7 +361,7 @@ rm fastani_querylist.txt
 
 module unload fastani/1.1
 ```
-Screening contigs (metagenomic or genomic) for 
+Screening contigs (metagenomic or genomic) for genes of interest eg. antimicrobial resistance determinants, plasmid-associated genes, virulence factors
 ```bash
 mkdir AbricateOutputs/
 
