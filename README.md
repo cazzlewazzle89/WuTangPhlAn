@@ -38,6 +38,19 @@ mock
 neg
 ```
 
+A handy one-liner command to create the samplenames.txt file from that list of samples would be
+```bash
+ls RawFastQ/*_R1.fastq.gz | sed 's/^RawFastQ\///; s/_R1\.fastq\.gz$//' > samplenames.txt
+```
+The four components to this command are:  
+1. `ls RawFastQ/` lists all files in the 'RawFastQ/' directory  
+2. `|` pipes (passes) this list to the next command
+3. [`sed`](https://en.wikipedia.org/wiki/Sed) is an command that edits text using [regular expressions](https://en.wikipedia.org/wiki/Regular_expression). 
+   In this case we are telling it to perform two substitutions.  
+   The first removes the 'RawFastQ/' string from the beginning of each line.  
+   The second removes the '\_R1.fastq.gz' from the end of each line.  
+4. `>` directs the output to a text file named 'samplenames.txt' instead of printing to the terminal screen
+
 ## Quality control
 The two main steps in quality control of metagenomic sequencing data are:  
 * adapter removal and quality trimming
@@ -59,7 +72,7 @@ The steps in this script are as follows:
   * removing reads which aligned to the contaminant database
   * converting the alignment back into fastq format
  The files are stored in the MicrobialFastQ/ directory and are the metagenomic reads which you will use for downstream analysis.  
- Note: the steps in the example below all specify that 24 CPUs are used for every task. You will need to specify this in your SLURM batch script when submitting the job using `#SBATCH --cpus-per-task=8` or adjust the number of however many CPUs you would like to use.  
+ Note: the steps in the example below all specify that 8 CPUs are used for every task. You will need to specify this in your SLURM batch script when submitting the job using `#SBATCH --cpus-per-task=8` or adjust the number of however many CPUs you would like to use.  
  They also use default parameters. You may need to change these based on your data. 
 
 
