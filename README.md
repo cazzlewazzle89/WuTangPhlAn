@@ -152,7 +152,7 @@ gzip MicrobialFastQ/*.fastq
 
 ## Microbiome Profiling
 This script perfoms taxonomic and functional profiling using [HUMANn3](https://github.com/biobakery/humann) and will
-* create directories for each output
+* create directories for each type of output
 * create interleaved fastq files using [BBTools](https://jgi.doe.gov/data-and-tools/bbtools/)
 * run the HUMANn3 pipeline
 * remove the interleaved fastq files
