@@ -268,6 +268,8 @@ module unload metaphlan2/3.0
 
 rm -r StrainPhlAn/ConsensusMarkers/ StrainPhlAn/CladeMarkers/
 ```
+Alternatively, a more recent approach for strain-level profiling is to use [inStrain](https://github.com/MrOlm/inStrain). 
+((TO BE UPDATED))
 ## Metagenome Assembly using Metaspades
 ```bash
 mkdir Metaspades_Assemblies/
