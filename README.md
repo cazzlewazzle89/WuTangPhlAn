@@ -1,6 +1,6 @@
 # Enter the Wu-TangPhlAn
 The goal is to turn this into a (w)rapper script for **Ph**y**l**ogenetic **An**alysis of metagenomic data.  
-At the moment it is a work-in-progress tutorial mainly applicable for use on the hcux400 HPC at Teagasc but the general code should work on other machines.  
+At the moment it is a work-in-progress tutorial mainly applicable for use on the hcux400 HPC at Teagasc but the general code should work on other machines (just modify the ```module load``` lines).  
 
 ### Table of Contents
 [Setup](https://github.com/cazzlewazzle89/WuTangPhlAn#setup)  
