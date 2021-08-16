@@ -43,7 +43,7 @@ A handy one-liner command to create the samplenames.txt file from that list of s
 ls RawFastQ/*_R1.fastq.gz | sed 's/^RawFastQ\///; s/_R1\.fastq\.gz$//' > samplenames.txt
 ```
 The four components to this command are:  
-1. `ls RawFastQ/` lists all files in the 'RawFastQ/' directory  
+1. `RawFastQ/*_R1.fastq.gz` lists all files in the 'RawFastQ/' directory with the suffix '_R1.fastq.gz' 
 2. `|` pipes (passes) this list to the next command
 3. [`sed`](https://en.wikipedia.org/wiki/Sed) is an command that edits text using [regular expressions](https://en.wikipedia.org/wiki/Regular_expression). 
    In this case we are telling it to perform two substitutions.  
